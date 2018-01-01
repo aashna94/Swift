@@ -1,0 +1,15 @@
+//: Playground - noun: a place where people can play
+
+import UIKit
+
+let indvidualScore = [50,20,10,90,80,60]
+var teamScore = 0
+for x in indvidualScore {
+    if x>50 {
+        teamScore += 3
+    }
+    else {
+        teamScore += 1
+    }
+}
+print(teamScore)
