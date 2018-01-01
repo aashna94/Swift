@@ -1,0 +1,19 @@
+//: Playground - noun: a place where people can play
+
+import UIKit
+
+let numbers = [ "Prime" : [2,3,5,7,11] , "Fibbonaci" : [1,2,3,5,7,12], "Square":[1,4,9,16,25,36]]
+
+var largest = 0
+var k : String? = nil
+for(kind,num) in numbers {
+    for n in num {
+        if n>largest {
+            largest = n
+            k = kind
+        }
+    }
+}
+print(largest)
+print(k)
+
