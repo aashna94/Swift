@@ -1,0 +1,44 @@
+//
+//  ViewController.swift
+//  Concentration Game
+//
+//  Created by Aashna Narula on 04/01/18.
+//  Copyright © 2018 Aashna Narula. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController {
+
+    var flipCount = 0{
+        didSet{
+            flipCountLabel.text = "Flips : \(flipCount)"
+        }
+    }
+    
+    @IBOutlet var CardButtons: [UIButton]!
+    var emojiChoices : Array<String> = ["😍", "😎", "😍", "😎"]
+    
+    @IBOutlet var flipCountLabel: UILabel!
+    
+    @IBAction func touchCard(_ sender: UIButton) {
+        flipCount += 1
+        if let cardNum = CardButtons.index(of: sender){
+            flipCard(withEmoji: emojiChoices[cardNum], on: sender)
+        }
+        else{
+            print("Card Number is not present.")
+        }
+    }
+    func flipCard(withEmoji emoji : String, on button : UIButton) {
+        if button.currentTitle == emoji{
+            button.setTitle("", for: UIControlState.normal)
+            button.backgroundColor = #colorLiteral(red: 0.9659569301, green: 0.1606848704, blue: 0.08663530739, alpha: 1)
+        }
+        else{
+            button.setTitle(emoji, for: UIControlState.normal)
+            button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        }
+    }
+}
+
