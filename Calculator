@@ -1,0 +1,136 @@
+//
+//  CalcBrain.swift
+//  Calc
+//
+//  Created by Aashna Narula on 09/01/18.
+//  Copyright © 2018 Aashna Narula. All rights reserved.
+//
+
+import Foundation
+
+struct CalcBrain {
+    private var accumulator : Double?
+    
+    private enum Operation {
+        case constant(Double)
+        case unaryOp((Double) -> Double)
+        case binaryOp((Double,Double) -> Double)
+        case equals
+    }
+    
+    
+    private var operations : Dictionary<String, Operation> =
+        [
+            "pi" :Operation.constant(Double.pi),
+            "e" : Operation.constant(M_E),
+            "root" : Operation.unaryOp(sqrt),
+            "cos" : Operation.unaryOp(cos),
+            "+/-" : Operation.unaryOp({-$0}),
+            "*" : Operation.binaryOp({$0 * $1}),
+            "=" : Operation.equals,
+            "+" : Operation.binaryOp({$0 + $1}),
+            "-" : Operation.binaryOp({$0 - $1}),
+            "/" : Operation.binaryOp({$0 / $1})
+    ]
+    mutating func operation(_ symbol : String) {
+        if let op = operations[symbol]{
+            switch op {
+            case .constant(let value):
+                accumulator = value
+            case .unaryOp(let function):
+                if accumulator != nil {
+                    accumulator = function(accumulator!)
+                }
+            case .binaryOp(let function):
+                if accumulator != nil {
+                    pb = performBinary(function: function, first: accumulator!)
+                    accumulator = nil
+                }
+            case .equals : performPendingBinaryOp()
+                
+            }
+        }
+    }
+    private mutating func performPendingBinaryOp() {
+        if pb != nil && accumulator != nil {
+            accumulator = pb?.perform(with: accumulator!)
+        }
+    }
+    
+    private var pb : performBinary?
+    private struct performBinary {
+        let function : (Double, Double) -> Double
+        let first : Double
+        
+        func perform(with second : Double) -> Double{
+            return function(first,second)
+        }
+    }
+    
+    mutating func setOperand(op : Double) {
+        accumulator = op
+    }
+    var res : Double? {
+        get{
+            return accumulator
+        }
+    }
+    
+    
+}
+
+
+//
+//  ViewController.swift
+//  Calc
+//
+//  Created by Aashna Narula on 09/01/18.
+//  Copyright © 2018 Aashna Narula. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController {
+    
+    
+    @IBOutlet var display: UILabel!
+    var isTyping = false
+    @IBAction func touchDigit(_ sender: UIButton) {
+        let digit = sender.currentTitle!
+        if isTyping {
+            let textOnDisplay = display!.text!
+            display!.text! = textOnDisplay + digit
+        }
+        else {
+            display!.text! = digit
+            isTyping = true
+        }
+    }
+    
+    var displayValue : Double {
+        get{
+            return Double(display.text!)!
+        }
+        set{
+            display.text = String(newValue)
+        }
+    }
+    
+    private var brain = CalcBrain()
+    
+    @IBAction func operation(_ sender: UIButton) {
+        if isTyping {
+            brain.setOperand(op: displayValue)
+            isTyping = false
+        }
+        if let op = sender.currentTitle {
+            brain.operation(op)
+        }
+        if let res = brain.res {
+            displayValue = res
+        }
+    }
+    
+}
+
+
