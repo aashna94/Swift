@@ -1,0 +1,57 @@
+//
+//  ViewController.swift
+//  Stopwatch1
+//
+//  Created by Aashna Narula on 15/01/18.
+//  Copyright © 2018 Aashna Narula. All rights reserved.
+//
+
+import UIKit
+
+class ViewController: UIViewController {
+
+    
+    var counter : Double = 0.0
+    var timer = Timer()
+    @IBOutlet var displayScreen: UITextField!
+    @IBOutlet var reset: UIButton!
+    @IBOutlet var pause: UIButton!
+    @IBOutlet var start: UIButton!
+    var isPlaying = false
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        counter = 0.0
+        displayScreen.text = String(counter)
+    }
+
+    @IBAction func startButton(_ sender: UIButton) {
+        if isPlaying {
+            return
+        }
+        start.isEnabled = false
+        pause.isEnabled = true
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+    }
+    
+    @IBAction func pauseButton(_ sender: UIButton) {
+        start.isEnabled = true
+        pause.isEnabled = false
+        timer.invalidate()
+        isPlaying = false
+    }
+    
+    
+    @IBAction func resetButton(_ sender: UIButton) {
+        start.isEnabled = true
+        pause.isEnabled = false
+        timer.invalidate()
+        counter = 0
+        displayScreen.text = String(counter)
+    }
+    
+    @objc func updateTimer() {
+        counter += 1
+        displayScreen.text = String(counter)
+    }
+}
